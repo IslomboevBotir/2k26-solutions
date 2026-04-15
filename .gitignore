@@ -1,0 +1,59 @@
+# 🔥 Python cache
+
+**pycache**/
+*.py[cod]
+*$py.class
+
+# 🔥 Virtual environment
+
+venv/
+env/
+ENV/
+.venv/
+
+# 🔥 Environment variables
+
+.env
+.env.*
+
+# 🔥 Django
+
+*.log
+db.sqlite3
+media/
+
+# 🔥 IDE (PyCharm, VS Code)
+
+.idea/
+.vscode/
+*.iml
+
+# 🔥 OS files
+
+.DS_Store
+Thumbs.db
+
+# 🔥 Build / dist
+
+build/
+dist/
+*.egg-info/
+
+# 🔥 Coverage / testing
+
+.coverage
+htmlcov/
+.pytest_cache/
+
+# 🔥 Logs
+
+*.log
+
+# 🔥 Node (agar frontend bo‘lsa)
+
+node_modules/
+
+# 🔥 Temporary files
+
+*.tmp
+*.swp
