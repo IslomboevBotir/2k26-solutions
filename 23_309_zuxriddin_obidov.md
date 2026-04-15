@@ -24,7 +24,7 @@
 ### ⚙️ Nofunksional talablar (Non-Functional Requirements)
 
 1. **Tezkorlik (Performance)**
-   - Tizim 1–2 soniya ichida javob qaytarishi kerak.
+   - Tizim 0.5 soniya ichida javob qaytarishi kerak.
 
 2. **Xavfsizlik (Security)**
    - Parollar hash qilinishi va JWT orqali autentifikatsiya ishlatilishi kerak.
@@ -50,13 +50,12 @@
                 │
                 ▼
     ┌─────────────────────────┐
-    │     Frontend (UI)       │
-    │  HTML + Bootstrap + JS  │
+    │        Frontend         │
     └──────────┬──────────────┘
                │ HTTP Request
                ▼
     ┌─────────────────────────┐
-    │     Backend (FastAPI)   │
+    │         Backend         │
     │ ─────────────────────── │
     │ • Auth Module           │
     │ • Inventory Module      │
@@ -66,7 +65,7 @@
                │ SQL Queries
                ▼
     ┌─────────────────────────┐
-    │     PostgreSQL DB       │
+    │         DB              │
     │ • Products              │
     │ • Sales                 │
     │ • Users                 │
@@ -95,15 +94,14 @@
                     ▼
         ┌─────────────────────────┐
         │     Frontend (UI)       │
-        │  HTML + Bootstrap + JS  │
         └──────────┬──────────────┘
-                 │ HTTP Request
-                 ▼
+                   │ HTTP Request
+                   ▼
         ┌─────────────────────────┐
         │     API Gateway         │
         └──────────┬──────────────┘
-                 │ HTTP Request
-                 ▼
+                   │ HTTP Request
+                   ▼
         ┌─────────────────────────┐   ┌──────────────────────────┐   ┌─────────────────────────┐
         │ Auth Service            │   │ Inventory Service        │   │ Sales Service           │
         │ • User Management       │   │ • Product Management     │   │ • Sales Management      │
