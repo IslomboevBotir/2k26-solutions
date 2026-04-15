@@ -1,0 +1,53 @@
+1-bosqich. Talablar
+Funksional talablar
+| #  | Talab                                                                                |
+| -- | ------------------------------------------------------------------------------------ |
+| F1 | Foydalanuvchi ro'yxatdan o'tishi va tizimga kirishi (admin va fermer rollari bilan)  |
+| F2 | Issiqxona sensorlarini kuzatish: harorat, namlik, tuproq namligi, yorug'lik darajasi |
+| F3 | Real vaqt monitoring: sensor ma’lumotlarini grafik va jadval ko‘rinishida ko‘rsatish |
+| F4 | Avtomatik boshqaruv: sug‘orish, ventilyatsiya, isitish tizimlarini yoqish/o‘chirish  |
+| F5 | Ogohlantirishlar yuborish (SMS/email/push) agar parametrlar normadan chiqsa          |
+| F6 | Tarixiy ma’lumotlarni saqlash va tahlil qilish                                       |
+| F7 | Foydalanuvchi issiqxona parametrlarini qo‘lda sozlashi (masalan: optimal harorat)    |
+
+Nofunksional talablar
+| #   | Talab                                                                               |
+| --- | ----------------------------------------------------------------------------------- |
+| NF1 | Ishlash tezligi: sahifa yuklash ≤ 2 soniya, sensor ma’lumot yangilanishi ≤ 1 soniya |
+| NF2 | Xavfsizlik: JWT autentifikatsiya, HTTPS, parollar bcrypt bilan shifrlangan          |
+| NF3 | Kengayuvchanlik: bir vaqtning o‘zida ≥ 5,000 qurilma ulanishini qo‘llab-quvvatlash  |
+| NF4 | Mavjudlik: uptime ≥ 99%, ma’lumotlar uchun avtomatik backup                         |
+| NF5 | Foydalanish qulayligi: mobil va kompyuter uchun moslashgan responsive UI            |
+| NF6 | IoT moslashuvchanligi: Arduino, ESP32 kabi qurilmalar bilan ishlash imkoniyati      |
+
+2-bosqich. Arxitektura variantlari
+Variant 1 — Monolitik arxitektura (MVC)
+┌─────────────────────────────────────────────────────────┐
+│                    CLIENT (Web/Mobile)                  │
+└───────────────────────┬─────────────────────────────────┘
+                        │ HTTP/HTTPS
+┌───────────────────────▼─────────────────────────────────┐
+│              MONOLITHIC APPLICATION SERVER               │
+│                                                         │
+│  ┌────────────┐  ┌───────────────┐  ┌────────────────┐  │
+│  │   Auth     │  │  Monitoring   │  │ Notification   │  │
+│  │  Module    │  │    Module     │  │   Module       │  │
+│  └────────────┘  └───────────────┘  └────────────────┘  │
+│                                                         │
+│  ┌────────────┐  ┌───────────────┐  ┌────────────────┐  │
+│  │  Sensor    │  │ Automation    │  │   Analytics    │  │
+│  │  Module    │  │   Module      │  │   Module       │  │
+│  └────────────┘  └───────────────┘  └────────────────┘  │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼────────────────────────────────┐
+│                 PostgreSQL Database                    │
+│  (Users, Sensors, Temperature, Humidity,              │
+│   SoilMoisture, Alerts, Logs, Settings)               │
+└───────────────────────────────────────────────────────┘
+
+┌───────────────────────────────────────────────────────┐
+│                   IoT Devices                         │
+│     (ESP32, Arduino, Temperature Sensors, etc.)      │
+└───────────────────────────────────────────────────────┘
+
