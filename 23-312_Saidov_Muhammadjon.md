@@ -1,4 +1,4 @@
-# 🎫 Event Ticket Booking Service — Tizim Talablari va Arxitekturasi
+# Event Ticket Booking Service
 
 <br>
 
@@ -31,7 +31,7 @@
 
 ## 2-BOSQICH: ARXITEKTURA VARIANTLARI
 
-### 🔹 Variant 1: Monolit Arxitektura
+### Variant 1: Monolit Arxitektura
 
 ```
 ┌─────────────────────────┐
@@ -53,20 +53,20 @@
 └────────────────────────┘
 ```
 
-**✅ Afzalliklari:**
+**Afzalliklari:**
 - Dasturlash va deploy qilish oson
 - Bitta kod bazasi — boshqarish qulay
 - Kichik jamoa va MVP uchun ideal
 - Transaction boshqaruvi sodda
 
-**❌ Kamchiliklari:**
+**Kamchiliklari:**
 - Katta yuklama paytida masshtablash qiyin
 - Yangi funksiyalar qoʻshishda butun tizimni qayta deploy qilish kerak
 - Texnologik stack ni oʻzgartirish murakkab
 
 ---
 
-### 🔹 Variant 2: Microservices Arxitektura
+### Variant 2: Microservices Arxitektura
 
 ```
           ┌─────────────────────────┐
@@ -92,13 +92,13 @@
 └──────────┘    └──────────┘  └──────────────┘
 ```
 
-**✅ Afzalliklari:**
+**Afzalliklari:**
 - Har bir servis alohida masshtablanadi (masalan, Booking servisini alohida kuchaytirish)
 - Har bir servis uchun optimal texnologiya tanlash mumkin
 - Yangi funksiyalarni tez qoʻshish, CI/CD oson
 - Xatolik bir servisdan boshqasiga tarqalmaydi
 
-**❌ Kamchiliklari:**
+**Kamchiliklari:**
 - Dasturlash va deploy murakkabroq
 - Servislararo kommunikatsiya (gRPC/REST) va maʼlumotlar izchilligini boshqarish qiyin
 - Monitoring, logging, tracing tizimlari talab qilinadi
@@ -127,4 +127,3 @@
    - Booking va Payment servislarini alohida ajratish
    - Load balancer + Kubernetes orqali avtomatik masshtablash
 
-> **Xulosa:** Hozirgi bosqichda **Monolit** variantini tanlash mantiqiy, lekin kelajakda microservices ga oʻtish imkoniyatini kod darajasida oldindan rejalashtirish kerak (modular monolit yondashuvi).
