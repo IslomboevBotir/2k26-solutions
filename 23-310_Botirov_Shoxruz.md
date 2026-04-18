@@ -12,9 +12,10 @@ Functional Requirements
 Non-Functional Requirements
 1. Availability: The platform should have 99.9% uptime during scheduled examination windows.
 2. Scalability: The system must handle up to 5,000 concurrent students during peak hours.
-3. Security: All student data and exam answers must be encrypted using TLS/SSL.
-4. Low Latency: Audio streaming and recording latency must be under 200ms.
-5. Reliability: The system must autosave student progress every 30 seconds to prevent data loss.
+3. Security (Data in Transit): All client-to-service and service-to-service traffic must be encrypted using TLS/SSL.
+4. Security (Data at Rest): Stored student data, exam answers, and audio recordings must be encrypted at rest, with encryption keys managed securely.
+5. Low Latency: Audio streaming and recording latency must be under 200ms.
+6. Reliability: The system must autosave student progress every 30 seconds to prevent data loss.
 
 
 Stage 2. Architecture
