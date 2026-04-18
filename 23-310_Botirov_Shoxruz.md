@@ -28,7 +28,7 @@ Disadvantages: Hard to scale individual modules and a single bug can crash the e
 Option 2: Microservices Architecture
 The system is split into independent services (User Service, Test Service, Media Service) communicating via APIs.
 
-Advantages:** Independent scaling for heavy modules (like Audio) and better fault isolation.
+Advantages: Independent scaling for heavy modules (like Audio) and better fault isolation.
 Disadvantages: Higher operational complexity and infrastructure costs.
 
 Recommendation
