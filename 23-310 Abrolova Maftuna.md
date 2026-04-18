@@ -1,0 +1,143 @@
+ Parking Space Reservation App
+
+Guruh: 23-310
+Familiya, Ism: Abrolova Maftuna
+
+---
+
+ Loyiha tavsifi
+
+Men ushbu vazifa uchun Parking Space Reservation App mavzusini tanladim. Bu tizim foydalanuvchilarga bo‘sh avtoturargoh joylarini topish, kerakli vaqtni tanlash va joyni oldindan band qilish imkonini beradi. Agar foydalanuvchining rejasi o‘zgarsa, u bronni bekor ham qila oladi. Bunday tizim savdo markazlari, ofislar, aeroportlar va boshqa gavjum joylarda juda foydali bo‘lishi mumkin.
+
+---
+
+ 1-bosqich. Talablar
+
+ Funksional talablar
+
+1. Ro‘yxatdan o‘tish va tizimga kirish  
+   Foydalanuvchi telefon raqami yoki email orqali ro‘yxatdan o‘ta olishi va tizimga kira olishi kerak.
+
+2. Bo‘sh parking joylarini qidirish  
+   Foydalanuvchi manzil, hudud yoki xarita orqali bo‘sh parking joylarini ko‘ra olishi kerak.
+
+3. Parking joyini oldindan band qilish  
+   Foydalanuvchi aniq sana va vaqt oralig‘i uchun parking joyini bron qila olishi kerak.
+
+4. To‘lovni amalga oshirish  
+   Foydalanuvchi band qilingan parking joyi uchun tizim ichida to‘lov qila olishi kerak.
+
+5. Bronni bekor qilish  
+   Foydalanuvchi o‘z bronini bekor qila olishi kerak. Agar kerak bo‘lsa, tizim qaytarish siyosatiga asosan pulni qaytarishi ham mumkin.
+
+ Nofunksional talablar
+
+1. Ishlash tezligi  
+   Qidiruv va bron qilish operatsiyalari tez bajarilishi kerak, masalan 2 soniya ichida.
+
+2. Xavfsizlik  
+   Foydalanuvchi ma’lumotlari va to‘lov ma’lumotlari himoyalangan bo‘lishi kerak. Masalan, HTTPS va shifrlash ishlatilishi kerak.
+
+3. Mavjudlik  
+   Tizim doimiy ishlashi kerak, ya’ni foydalanuvchi istalgan vaqtda undan foydalana olishi kerak.
+
+4. Kengayish imkoniyati  
+   Kelajakda foydalanuvchilar soni oshsa ham tizim ishlashda davom etishi kerak.
+
+5. Foydalanish qulayligi  
+   Interfeys oddiy va tushunarli bo‘lishi kerak, shunda oddiy foydalanuvchi ham qiynalmasdan ishlata oladi.
+
+---
+
+ 2-bosqich. Arxitektura
+
+ 1-variant: Monolitik arxitektura
+
+Bu variantda tizimning barcha asosiy qismlari bitta umumiy dastur ichida ishlaydi. Masalan, foydalanuvchi ro‘yxatdan o‘tishi, parking joylarini qidirishi, bron qilishi va to‘lov qilishi bitta server ichida boshqariladi.
+
+ Tizim sxemasi
+
+```text
+┌─────────────────────────────────────────────┐
+│          Foydalanuvchi (Browser/App)        │
+└─────────────────────┬───────────────────────┘
+                      │ HTTP
+┌─────────────────────▼──────────────────────┐
+│               MONOLITH SERVER              │
+│                                            │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  │
+│  │   Auth   │  │ Parking  │  │ Payment  │  │
+│  │  Module  │  │  Module  │  │  Module  │  │
+│  └──────────┘  └──────────┘  └──────────┘  │
+│                                            │
+└─────────────────────┬──────────────────────┘
+                      │
+┌─────────────────────▼───────────────────────┐
+│           Database (PostgreSQL)             │
+└─────────────────────────────────────────────┘
+```
+
+ Afzalliklari
+
+- Ishlab chiqish oson va tez
+- Deploy qilish sodda
+- Kichik loyiha uchun juda qulay
+- Test qilish va debugging nisbatan oson
+
+ Kamchiliklari
+
+- Tizim kattalashsa boshqarish qiyinlashadi
+- Bitta moduldagi xato butun tizimga ta’sir qilishi mumkin
+- Butun tizimni birga kengaytirishga to‘g‘ri keladi
+
+---
+
+ 2-variant: Mikroservis arxitekturasi
+
+Bu variantda tizim bir nechta mustaqil servisga bo‘linadi. Masalan, alohida auth service, parking service va payment service bo‘ladi. Har biri o‘z vazifasini bajaradi.
+
+ Tizim sxemasi
+
+```text
+┌──────────────────────────────────────────────────┐
+│           Foydalanuvchi (Browser/App)            │
+└──────────────────────┬───────────────────────────┘
+                       │ HTTP
+┌──────────────────────▼───────────────────────────┐
+│                   API Gateway                    │
+└────┬──────────────────┬───────────────────┬──────┘
+     │                  │                   │
+┌────▼─────┐    ┌───────▼──────┐    ┌───────▼──────┐
+│   Auth   │    │   Parking    │    │   Payment    │
+│ Service  │    │   Service    │    │   Service    │
+└────┬─────┘    └───────┬──────┘    └───────┬──────┘
+     │                  │                   │
+┌────▼─────┐    ┌───────▼──────┐    ┌───────▼──────┐
+│  Users   │    │   Parking    │    │  Payments    │
+│    DB    │    │      DB      │    │      DB      │
+└──────────┘    └──────────────┘    └──────────────┘
+```
+
+ Afzalliklari
+
+- Har bir servisni alohida rivojlantirish mumkin
+- Kerakli qismlarni alohida scale qilish mumkin
+- Katta tizimlar uchun qulayroq
+- Katta jamoa parallel ishlashi mumkin
+
+ Kamchiliklari
+
+- Tuzilishi murakkabroq
+- Servislar orasidagi aloqa qo‘shimcha muammo keltirishi mumkin
+- Monitoring va debugging qiyinroq
+- Kichik loyiha uchun biroz ortiqcha bo‘lishi mumkin
+
+---
+
+ Qaysi variant yaxshiroq va nima uchun?
+
+Menimcha, ushbu loyiha uchun monolitik arxitektura yaxshiroq variant hisoblanadi.
+
+Sababi, bu loyiha hali uncha katta va murakkab emas. Monolitik arxitektura sodda, tushunarli va uni ishlab chiqish ham osonroq. O‘quv vazifasi uchun ham aynan shu variant mos keladi, chunki system design mavzusi hali chuqur o‘tilmagan.
+
+Mikroservis arxitekturasi katta va murakkab loyihalarda foydali bo‘lishi mumkin. Lekin hozirgi topshiriq uchun u ortiqcha murakkablik keltirib chiqaradi.
