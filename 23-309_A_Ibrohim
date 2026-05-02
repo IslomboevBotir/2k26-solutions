@@ -1,0 +1,136 @@
+# Farmer Marketplace — Tizim Talablari va Arxitekturasi
+
+**Guruh:** 23-309  
+**Talaba:** A. Ibrohim
+**Loyiha mavzusi:** Farmer Marketplace (Dehqon Bozori Platformasi)
+
+---
+
+## 1-bosqich. Talablar
+
+### Funksional talablar
+
+| # | Talab |
+|---|-------|
+| F1 | Foydalanuvchi ro'yxatdan o'tishi va tizimga kirishi (dehqon va xaridor rollari bilan) |
+| F2 | Dehqon mahsulot kartochkasi: nomi, narx, miqdor, rasm, joylashuv, holat |
+| F3 | Xaridor mahsulot qidirishi, kategoriya va narx bo'yicha filtrlash |
+| F4 | Savatcha, buyurtma berish, to'lov va yetkazib berish holati kuzatuvi |
+| F5 | Dehqon va xaridor o'rtasida chat, reyting va sharh tizimi |
+
+### Nofunksional talablar
+
+| # | Talab |
+|---|-------|
+| NF1 | **Ishlash tezligi:** Sahifa yuklash vaqti ≤ 2 soniya, qidiruv natijasi ≤ 300ms |
+| NF2 | **Xavfsizlik:** JWT autentifikatsiya, HTTPS, to'lov ma'lumotlari shifrlangan (PCI DSS) |
+| NF3 | **Kengayuvchanlik:** Bir vaqtda ≥ 10,000 foydalanuvchini qo'llab-quvvatlash |
+| NF4 | **Mavjudlik:** Uptime ≥ 99.5%, kunlik zaxira nusxa (backup) |
+| NF5 | **Foydalanish qulayligi:** Mobil qurilmaga moslashgan (responsive) UI, O'zbek va Rus tili qo'llab-quvvatlanadi |
+
+---
+
+## 2-bosqich. Arxitektura variantlari
+
+---
+
+### Variant 1 — Monolitik arxitektura (MVC)
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    CLIENT (Browser/Mobile)               │
+└───────────────────────┬─────────────────────────────────┘
+                        │ HTTP/HTTPS
+┌───────────────────────▼─────────────────────────────────┐
+│              MONOLITHIC APPLICATION SERVER               │
+│  ┌────────────┐  ┌───────────────┐  ┌────────────────┐  │
+│  │  Auth      │  │   Product     │  │  Notification  │  │
+│  │  Module    │  │   Module      │  │  Module        │  │
+│  └────────────┘  └───────────────┘  └────────────────┘  │
+│  ┌────────────┐  ┌───────────────┐  ┌────────────────┐  │
+│  │  Order     │  │   Payment     │  │   Review       │  │
+│  │  Module    │  │   Module      │  │   Module       │  │
+│  └────────────┘  └───────────────┘  └────────────────┘  │
+└───────────────────────┬─────────────────────────────────┘
+                        │
+┌───────────────────────▼──────────────┐
+│         MySQL Database               │
+│  (Users, Products, Orders,           │
+│   Payments, Reviews, Messages)       │
+└──────────────────────────────────────┘
+```
+
+**Afzalliklari:**
+- Ishlab chiqish tezligi yuqori — bitta kod bazasi
+- Deploy qilish oson — bitta server
+- Ichki chaqiriqlar tez (network yo'q)
+- Debugging va monitoring oson
+- Kichik jamoa uchun qulay
+
+**Kamchiliklari:**
+- Kengaytirish qiyin — butun tizimni scale qilish kerak
+- Bir modul xatosi butun tizimni to'xtatishi mumkin
+- Texnologiyalarni almashtirish murakkab
+- Katta loyihada kod bazasi murakkablashib ketadi
+- CI/CD jarayoni sekin (har deploy da hammasi qayta yuklanadi)
+
+---
+
+### Variant 2 — Mikroservis arxitekturasi
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                  CLIENT (Browser/Mobile)                  │
+└─────────────────────────┬────────────────────────────────┘
+                          │ HTTPS
+┌─────────────────────────▼────────────────────────────────┐
+│                    API GATEWAY                            │
+│           (Routing, Auth, Rate Limiting)                  │
+└──┬──────────────┬──────────────┬───────────────┬─────────┘
+   │              │              │               │
+┌──▼───┐    ┌─────▼────┐   ┌────▼─────┐   ┌─────▼────┐
+│ Auth │    │ Product  │   │  Order   │   │ Notif.   │
+│ Svc  │    │ Service  │   │ Service  │   │ Service  │
+└──┬───┘    └─────┬────┘   └────┬─────┘   └─────┬────┘
+   │              │              │               │
+┌──▼───┐    ┌─────▼────┐   ┌────▼─────┐   ┌─────▼────┐
+│Users │    │Products  │   │ Orders   │   │Message   │
+│  DB  │    │   DB     │   │   DB     │   │  Queue   │
+└──────┘    └──────────┘   └──────────┘   └──────────┘
+                    ↑
+            ┌───────┴────────┐
+            │  Message Bus   │
+            │  (RabbitMQ)    │
+            └────────────────┘
+```
+
+**Afzalliklari:**
+- Har bir servis mustaqil scale qilinadi
+- Xato izolyatsiyasi — bir servis to'xtasa, boshqalar ishlaydi
+- Har bir servis uchun mos texnologiya tanlanadi
+- Mustaqil deploy — tezroq CI/CD
+- Katta jamoalar parallel ishlashi mumkin
+
+**Kamchiliklari:**
+- Murakkab infratuzilma (Docker, Kubernetes kerak)
+- Servislar arasi network latency
+- Distributed tracing va monitoring qiyin
+- Kichik jamoaga haddan tashqari murakkab
+- Dastlabki sozlash uchun ko'p vaqt talab qilinadi
+
+---
+
+### Xulosa: Qaysi variant yaxshiroq?
+
+**Ushbu loyiha uchun — Variant 1 (Monolitik) tavsiya etiladi.**
+
+**Asoslash:**
+
+1. **Loyiha hajmi** — Farmer marketplace o'rta hajmli loyiha. Mikroservislar juda katta tizimlar (Amazon, Alibaba) uchun mo'ljallangan.
+2. **Jamoa** — Talabalar loyihasi yoki kichik startap uchun bitta kod bazasini boshqarish ancha oson.
+3. **Boshlang'ich bosqich** — MVP (Minimum Viable Product) ni tez chiqarish uchun monolitik arxitektura optimal.
+4. **Kengaytirish imkoni** — Keyinchalik trafik oshsa, monolitni mikroservislarga bo'lish mumkin (Strangler Fig pattern).
+
+> **Qoida:** "Avval oddiyroq, keyin murakkablashtir" — faqat haqiqiy muammo yuzaga kelganda mikroservislarga o'ting.
+
+---
